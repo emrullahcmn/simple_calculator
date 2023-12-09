@@ -166,7 +166,7 @@ void Calculator::parse(int p_index, int p_st_index, int p_end_index, string& s){
             continue;
         }
 
-        if(s[i] >= '0' && s[i] <= '9'){
+        if((s[i] >= '0' && s[i] <= '9') || s[i] == '.'){
             int ind = i;
             string nstr = "";
             if(neg){
@@ -174,7 +174,7 @@ void Calculator::parse(int p_index, int p_st_index, int p_end_index, string& s){
                 neg = false;
             }
 
-            while(ind < p_end_index && s[ind] >= '0' && s[ind] <= '9'){
+            while(ind < p_end_index && (s[ind] >= '0' && s[ind] <= '9' || s[ind] == '.')){
                 nstr += s[ind];
                 ind++;
             }
@@ -225,7 +225,11 @@ void Calculator::check_characters(string& s){
     for(int i = 0; i<s.length(); i++){
         if(s[i] >= '0' && s[i] <= '9') continue;
         if(s[i] == '+' || s[i] == '/' || s[i] == '*' || s[i] == '-' || s[i] == '(' || s[i] == ')') continue;
-
+        if(s[i] == '.'){
+            if(i == 0 || (s[i-1] < '0' || s[i-1] > '9')) throw Parse_error{"Input Contains Invalid Floating Point!"};
+            if(i == s.length()-1 || (s[i+1] < '0' || s[i+1] > '9')) throw Parse_error{"Input Contains Invalid Floating Point!"};
+            continue;
+        }
         throw Parse_error{"Input Contains UNKNOWN Character Error!"};
         return;
     }
